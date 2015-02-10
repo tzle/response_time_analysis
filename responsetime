@@ -1,0 +1,5 @@
+dat <- read.csv("dispatch_generic_smcf_2013_hdr_edit.csv",header=TRUE, na.strings="NA") #FILELOCATION
+names(dat)
+dat$enroute <- strptime(dat$EnrouteDT,"%m/%d/%Y %H:%M:%S") # enroute
+dat$arrived <- strptime(dat$OnsceneDT,"%m/%d/%Y %H:%M:%S") # arrived
+
