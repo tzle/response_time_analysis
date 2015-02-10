@@ -1,5 +1,22 @@
 dat <- read.csv("dispatch_generic_smcf_2013_hdr_edit.csv",header=TRUE, na.strings="NA") #FILELOCATION
 names(dat)
+
+# articulate variables
 dat$enroute <- strptime(dat$EnrouteDT,"%m/%d/%Y %H:%M:%S") # enroute
 dat$arrived <- strptime(dat$OnsceneDT,"%m/%d/%Y %H:%M:%S") # arrived
+
+# compute difference
+dat$dt <- difftime(dat$arrived,dat$enroute,units="secs")
+
+# format calculation
+dat$ResponseTime <- format(.POSIXct(dat$dt,tz="GMT"),"%H:%M:%S")
+
+# day of week
+dat$DOW <- weekdays(as.Date(dat$enroute))
+
+# hour of day
+dat$HOD <- format(as.POSIXct(dat$enroute,format="%m/%d/%Y %H:%M:%S"),format="%H")
+
+# new dataset summarizing 
+
 
