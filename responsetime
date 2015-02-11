@@ -1,13 +1,31 @@
 dat <- read.csv("dispatch_generic_smcf_2013_hdr_edit.csv",header=TRUE, na.strings="NA") #FILELOCATION
 names(dat)
 
-# articulate variables
+# necessary packages
+install.packages("stringi")
+library(stringi)
+
+
+# articulate variables VERSION 1
 dat$enroute <- strptime(dat$EnrouteDT,"%m/%d/%Y %I:%M:%S") # enroute
 dat$arrived <- strptime(dat$OnsceneDT,"%m/%d/%Y %I:%M:%S") # arrived
 dat$dt <- difftime(dat$arrived,dat$enroute,units="secs") # compute difference
-dat$ResponseTime <- format(.POSIXct(dat$dt,tz="GMT"),"%I:%M:%S") # format calculation
+# cancel: dat$ResponseTime <- format(.POSIXct(dat$dt,tz="GMT"),"%I:%M:%S") # format calculation
 dat$DOW <- weekdays(as.Date(dat$enroute)) # day of week
 dat$HOD <- format(as.POSIXct(dat$enroute,format="%m/%d/%Y %I:%M:%S"),format="%I") # hour of day
+
+
+# articulate variables VERSION 2
+dat$enroute3 <- as.POSIXlt(dat$EnrouteDT, tz="", format="%m/%d/%Y %I:%M:%S%p")
+dat$onscene3 <- as.POSIXlt(dat$OnsceneDT, tz="", format="%m/%d/%Y %I:%M:%S%p")
+dat$rt <- as.numeric(difftime(dat$onscene3,dat$enroute3,units="sec"))
+
+
+
+dat$HOD3 <- dat$enroute3[[3]]
+sort(unique(dat$HOD3))
+# [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+
 
 # new dataset summarizing 
 
